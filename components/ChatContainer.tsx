@@ -6,21 +6,26 @@ import { Input } from "./ui/input";
 import { IoMdSend } from "react-icons/io";
 import { useState } from "react";
 
+export interface IResponse {
+  content: string;
+  role: string;
+}
+
 const ChatContainer = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const [response, setResponse] = useState<string>("");
-  const [messageStore, setMessageStore] = useState<string[]>([]);
-  const [responseStore, setResponseStore] = useState<string[]>([]);
+  const [response, setResponse] = useState<IResponse[]>([]);
   const handleChatButton = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await axios.post("/api/v1/chat/hiteshsir", { message });
-      const aiResponse = res.data.response.choices[0].message.content;
-      setResponse(aiResponse);
-      setMessageStore((prev) => [...prev, message]);
-      setResponseStore((prev) => [...prev, aiResponse]);
+      const res = await axios.post("/api/chat", { message });
+      const aiResponse = res.data.response.choices[0].message;
+      setResponse((prev) => [
+        ...prev,
+        { role: "user", content: message },
+        aiResponse,
+      ]);
       setMessage("");
     } catch (error) {
       console.log(`ERROR from chai container ${error}`);
@@ -30,23 +35,24 @@ const ChatContainer = () => {
   };
 
   return (
-    <div className="border border-amber-400">
+    <div className="shadow-md shadow-white  rounded-xl mx-10 my-6">
       <div className="lg:w-2xl lg:h-[650px] overflow-y-auto overflow-x-hidden">
         <h1 className="text-center text-2xl font-bold my-2 ">
           Chat with Hitesh Sir
         </h1>
-        <div className="flex flex-col gap-2 my-10">
-          <div className="text-right bg-blue-500 text-white text-lg px-10 rounded-full">
-            {messageStore.map((data: string, index) => (
-              <p key={index}>{isLoading ? "Loading..." : data || ""}</p>
-            ))}
+        {response.map((data, index) => (
+          <div key={index} className="flex flex-col gap-4">
+            {data.role === "user" ? (
+              <span className="self-end text-right mx-4 px-4 py-2 rounded-2xl bg-blue-500 max-w-sm border border-red-500">
+                {data.content}
+              </span>
+            ) : (
+              <span className="self-starte text-left mx-4 px-4 py-2 rounded-2xl bg-blue-500 max-w-sm border-amber-400 border">
+                {data.content}
+              </span>
+            )}
           </div>
-          <div className="text-left bg-blue-500 text-white text-lg px-10 rounded-full">
-            {responseStore.map((data, index) => (
-              <p key={index}>{isLoading ? "Typing..." : data || ""}</p>
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
 
       <form
