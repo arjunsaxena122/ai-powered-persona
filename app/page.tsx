@@ -1,24 +1,24 @@
 "use client";
 import ChatContainer from "@/components/ChatContainer";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+import PersonaCard from "@/components/PersonaCard";
+
 export default function Home() {
   return (
-    <div className=" flex mx-auto h-screen">
-      <ResizablePanelGroup direction="horizontal" >
-        <ResizablePanel defaultSize={20}>
-          <h1 className="text-center text-4xl my-20 capitalize">
-            Chat with Best Tech-Industries Teacher{" "}
-          </h1>
-        </ResizablePanel>
-        <ResizableHandle withHandle/>
-        <ResizablePanel defaultSize={80}>
-          <ChatContainer />
-        </ResizablePanel>
-      </ResizablePanelGroup>
+    <div className="flex h-screen w-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+      <aside className="hidden md:flex md:flex-col w-72 border-r border-neutral-200 bg-white dark:bg-neutral-900 dark:border-neutral-800 p-6">
+        <h1 className="text-lg font-semibold mb-8">
+          Top Best Tech Mentors
+        </h1>
+
+        <div className="flex flex-col gap-3">
+          <PersonaCard src="/hiteshsir.jpg" alt="hiteshSir" name="Hitesh Sir" />
+          <PersonaCard src="/piyushsir.jpg" alt="piyushSir" name="Piyush Sir" />
+        </div>
+      </aside>
+
+      <main className="flex-1 flex flex-col">
+        <ChatContainer />
+      </main>
     </div>
   );
 }

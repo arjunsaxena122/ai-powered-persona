@@ -1,3 +1,5 @@
+import { hiteshSirSystemPrompt } from "@/helper/prompt/hiteshSir.prompt";
+import { piyushSirSystemPrompt } from "@/helper/prompt/piyushSir.prompt";
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
@@ -17,19 +19,21 @@ const conversational: TConversational = {
   updateAt: Date.now() + 1000 * 60 * 5,
 };
 
-const lastUpdate = Date.now();
 export async function POST(request: NextRequest) {
   if (Date.now() > conversational.updateAt) {
     conversational.aiMessages = [];
   }
 
   try {
-    const { message } = await request.json();
-    // console.log("message Post request", message);
-
-    if (!message) {
-      throw new Error(`ERROR from message ${message}`);
+    const { message, chatUser } = await request.json();
+    if (!message || !chatUser) {
+      throw new Error(`ERROR from message ${message || chatUser}`);
     }
+
+    const system_prompt =
+      chatUser === "Hitesh Sir" ? hiteshSirSystemPrompt : piyushSirSystemPrompt;
+
+    conversational.aiMessages.push({ role: "system", content: system_prompt });
 
     conversational.aiMessages.push({ role: "user", content: message });
 
@@ -47,7 +51,7 @@ export async function POST(request: NextRequest) {
       content: response.choices[0].message.content,
     });
 
-    console.log(conversational.aiMessages);
+    // console.log(conversational.aiMessages);
 
     return NextResponse.json(
       {
