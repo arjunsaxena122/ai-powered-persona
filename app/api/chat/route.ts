@@ -25,9 +25,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { message, chatUser } = await request.json();
-    if (!message || !chatUser) {
-      throw new Error(`ERROR from message ${message || chatUser}`);
+    const { usermessage, chatUser } = await request.json();
+    if (!usermessage || !chatUser) {
+      throw new Error(`ERROR from message ${usermessage || chatUser}`);
     }
 
     const system_prompt =
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     conversational.aiMessages.push({ role: "system", content: system_prompt });
 
-    conversational.aiMessages.push({ role: "user", content: message });
+    conversational.aiMessages.push({ role: "user", content: usermessage });
 
     const response = await client.chat.completions.create({
       model: "gemini-2.0-flash",

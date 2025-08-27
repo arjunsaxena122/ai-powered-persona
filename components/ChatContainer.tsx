@@ -22,20 +22,20 @@ const ChatContainer = () => {
   const handleChatButton = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!message.trim()) return;
+    const usermessage = message;
+    setResponse((prev) => [...prev, { role: "user", content: message }]);
+    setMessage("");
     setIsLoading(true);
     try {
-      const res = await axios.post("/api/chat", { message, chatUser });
+      const res = await axios.post("/api/chat", { usermessage, chatUser });
       const aiResponse = res.data.response.choices[0].message;
-      setResponse((prev) => [
-        ...prev,
-        { role: "user", content: message },
-        aiResponse,
-      ]);
-      setMessage("");
+      setResponse((prev) => [...prev, aiResponse]);
     } finally {
       setTimeout(() => setIsLoading(false), 800);
     }
   };
+
+  const active = chatUser !== "Hitesh Sir" && chatUser !== "Piyush Sir";
 
   return (
     <div className="flex flex-col flex-1 h-full bg-white dark:bg-neutral-900 border-l border-neutral-200 dark:border-neutral-800">
@@ -66,6 +66,18 @@ const ChatContainer = () => {
             </div>
           </div>
         ))}
+
+        {isLoading && (
+          <div className="flex justify-start">
+            <div
+              className="px-4 py-2 rounded-lg text-sm shadow-sm leading-6 
+        bg-white border border-neutral-200 text-neutral-500 
+        dark:bg-neutral-800 dark:border-neutral-700"
+            >
+              Typing...
+            </div>
+          </div>
+        )}
       </div>
 
       <form
@@ -78,8 +90,14 @@ const ChatContainer = () => {
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Type a message..."
           className="flex-1 text-sm h-10 bg-neutral-50 dark:bg-neutral-800"
+          disabled={active}
         />
-        <Button type="submit" size="icon" className="h-10 w-10">
+        <Button
+          type="submit"
+          size="icon"
+          className="h-10 w-10"
+          disabled={active}
+        >
           {isLoading ? "..." : <IoMdSend size={18} />}
         </Button>
       </form>

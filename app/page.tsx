@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className="flex h-screen w-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
       <aside className="hidden md:flex md:flex-col w-72 border-r border-neutral-200 bg-white dark:bg-neutral-900 dark:border-neutral-800 p-6">
-        <h1 className="text-lg font-semibold mb-8">
+        <h1 className="text-lg font-semibold mb-8 text-center">
           Top Best Tech Mentors
         </h1>
 
