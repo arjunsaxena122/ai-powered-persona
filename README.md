@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Powered Persona
 
-## Getting Started
+A project to create and interact with AI-powered personas.
 
-First, run the development server:
+## How to Set up Locally
+
+1. Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/arjunsaxena122/ai-powered-persona.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Go to the folder
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cd ai-powered-persona
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Install packages
 
-## Learn More
+- Go to the <b>ai-powered-persona</b> folder and run the following command in the terminal:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm i
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Run the server locally
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Go to terminal and write these following commands
 
-## Deploy on Vercel
+```bash
+pnpm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Environment variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. For Gemini AI
+
+```bash
+
+GEMINI_API_KEY=your-gemini-ai-api-key
+
+GEMINI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
+
+```
+
+2. For OpenAI
+
+```bash
+OPENAI_API_KEY=your-openai-api-key
+```
