@@ -16,7 +16,6 @@ const ChatContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState<IResponse[]>([]);
-
   const { isActiveChat, chatUser } = useChatActiveStore();
 
   const handleChatButton = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,10 +27,12 @@ const ChatContainer = () => {
     setIsLoading(true);
     try {
       const res = await axios.post("/api/chat", { usermessage, chatUser });
-      const aiResponse = res.data.response.choices[0].message;
+      const aiResponse = res.data?.choices[0]?.message;
       setResponse((prev) => [...prev, aiResponse]);
+    } catch (err) {
+      console.log(`Error: ${err}`);
     } finally {
-      setTimeout(() => setIsLoading(false), 800);
+      setIsLoading(false);
     }
   };
 
@@ -50,19 +51,29 @@ const ChatContainer = () => {
           <div
             key={index}
             className={`flex ${
-              data.role === "user" ? "justify-end" : "justify-start"
+              data?.role === "user" ? "justify-end" : "justify-start"
             }`}
           >
             <div
               className={`px-4 py-2 rounded-lg text-sm shadow-sm leading-6 lg:max-w-xl
                 ${
-                  data.role === "user"
+                  data?.role === "user"
                     ? "bg-blue-600 text-white rounded-br-none"
                     : "bg-white border border-neutral-200 text-neutral-900 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 rounded-bl-none"
                 }
               `}
             >
-              {data.content}
+              {data?.content
+                .split("\n")
+                .map((d, i) =>
+                  d.trim().startsWith("-") ||
+                  d.trim().startsWith("*") ||
+                  d.trim().startsWith("**") ? (
+                    <li key={i}>{d.replace(/(\*\*|\*|-|`)/g, "")}</li>
+                  ) : (
+                    <span key={i}>{d}</span>
+                  )
+                ) || "AI doesn't generate response yet!"}
             </div>
           </div>
         ))}
@@ -88,8 +99,14 @@ const ChatContainer = () => {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-1 text-sm h-10 bg-neutral-50 dark:bg-neutral-800"
+          placeholder={
+            active
+              ? "Could you please choose who you want to chat with?"
+              : "Type a message..."
+          }
+          className={`flex-1 text-sm h-10 bg-neutral-50 dark:bg-neutral-800 ${
+            active && "placeholder:text-white placeholder:font-bold"
+          }`}
           disabled={active}
         />
         <Button

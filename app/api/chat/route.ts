@@ -27,7 +27,12 @@ export async function POST(request: NextRequest) {
   try {
     const { usermessage, chatUser } = await request.json();
     if (!usermessage || !chatUser) {
-      throw new Error(`ERROR from message ${usermessage || chatUser}`);
+      throw NextResponse.json(
+        {
+          message: "ERROR from message ${usermessage || chatUser}",
+        },
+        { status: 400 }
+      );
     }
 
     const system_prompt =
@@ -38,12 +43,18 @@ export async function POST(request: NextRequest) {
     conversational.aiMessages.push({ role: "user", content: usermessage });
 
     const response = await client.chat.completions.create({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       messages: conversational.aiMessages,
     });
+    console.log(response.choices[0].message);
 
     if (!response) {
-      throw new Error(`ERROR from message ${response}`);
+      throw NextResponse.json(
+        {
+          message: "ERROR from message ${response}",
+        },
+        { status: 400 }
+      );
     }
 
     conversational.aiMessages.push({
@@ -51,16 +62,9 @@ export async function POST(request: NextRequest) {
       content: response.choices[0].message.content,
     });
 
-    // console.log(conversational.aiMessages);
-
-    return NextResponse.json(
-      {
-        response,
-      },
-      {
-        status: 200,
-      }
-    );
+    return NextResponse.json(response, {
+      status: 200,
+    });
   } catch (error) {
     NextResponse.json(`ERROR:${error}`, {
       status: 500,
